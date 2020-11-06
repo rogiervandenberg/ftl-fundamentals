@@ -2,6 +2,7 @@ package calculator_test
 
 import (
 	"calculator"
+	"math"
 	"math/rand"
 	"testing"
 )
@@ -94,6 +95,31 @@ func TestDivide(t *testing.T) {
 	}
 }
 
+func TestSqrt(t *testing.T) {
+
+	testCases := []testCase{
+		{a: 9, want: 3, errExpected: false},
+		{a: 100, want: 10, errExpected: false},
+		{a: 4, want: 2, errExpected: false},
+		{a: -1, want: 0, errExpected: true},
+	}
+
+	t.Parallel()
+
+	for _, tc := range testCases {
+		got, err := calculator.Squared(tc.a)
+
+		errReceived := err != nil
+		if tc.errExpected != errReceived {
+			t.Fatalf("Square root(%f): Unexpected error: %v", tc.a, errReceived)
+		}
+
+		if !tc.errExpected && tc.want != got {
+			t.Errorf("Square root(%f): Want %f, got %f", tc.a, tc.want, got)
+		}
+	}
+}
+
 func TestAddExtreme(t *testing.T) {
 	t.Parallel()
 	count := 1000000
@@ -106,9 +132,13 @@ func TestAddExtreme(t *testing.T) {
 
 		tc := testCase{a: f, b: g, want: r}
 		got := calculator.Add(tc.a, tc.b)
-		if tc.want != got {
+		// if tc.want != got {
+		if !closeEnough(tc.want, got, 0.0000001) {
 			t.Errorf("Add(%f, %f): want %f, got %f", tc.a, tc.b, tc.want, got)
 		}
 	}
+}
 
+func closeEnough(a, b, tolerance float64) bool {
+	return math.Abs(a-b) <= tolerance
 }

@@ -3,6 +3,7 @@ package calculator
 
 import (
 	"fmt"
+	"math"
 )
 
 // Add takes two numbers and returns the result of adding them together.
@@ -29,4 +30,15 @@ func Divide(a, b float64) (float64, error) {
 	}
 
 	return a / b, nil
+}
+
+// Squared takes a number and tries to get the square root from it
+func Squared(a float64) (float64, error) {
+
+	if a < 0 {
+
+		return 0, fmt.Errorf("Bad input: %f, input cannot be nagative", a)
+	}
+
+	return math.Sqrt(a), nil
 }
